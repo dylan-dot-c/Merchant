@@ -1,19 +1,31 @@
 import {useState} from "react"
-import { signInWithEmailAndPassword } from "firebase/auth"
-
-import { Link } from "react-router-dom"
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
 
 import {auth} from "../firebase"
 
 
-
-export default function Login() {
+export default function SignUp() {
 
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         showPassword: false,
     })
+
+    const signInUser = (event) => {
+        event.preventDefault()
+        const {email, password} = formData
+
+        createUserWithEmailAndPassword(auth, email, password )
+         .then((userCredential) => {
+            console.log(userCredential)
+            sendEmailVerification(userCredential.user);
+         }).catch((err) => {
+            console.error(err)
+         }) 
+
+        // hello
+    }
 
     const handleChange = (event) => {
         console.log(formData)
@@ -28,24 +40,11 @@ export default function Login() {
         })
     }
 
-    const loginUser = (event) => {
-        event.preventDefault()
-        const {email, password} = formData
-
-        signInWithEmailAndPassword(auth, email, password )
-         .then((userCredential) => {
-            console.log(userCredential)
-         }).catch((err) => {
-            console.error(err)
-         }) 
-
-        // hello
-    }
 
     return(
-            <form className="mx-auto max-w-[500px] shadow rounded p-6 " onSubmit={loginUser}>
+            <form className="mx-auto max-w-[500px] shadow rounded p-6 " onSubmit={signInUser}>
 
-                <h1>Welcome back to Dexk builder. Please Login to Continue</h1>
+                <h1>Welcome back to Dexk builder. Please fill in the form to get started</h1>
 
                 <div className="space-y-6">
                 <div className="relative z-0">
@@ -67,13 +66,10 @@ export default function Login() {
                 <input type="checkbox" name="showPassword" id="showPassword" onChange={handleChange}/>
                 <label htmlFor="showPassword">Show Password</label>
 
-                <button type="submit" className="py-2 font-semibold px-6 rounded bg-blue-500 text-white mx-auto block hover:bg-blue-800 transition">
-                    Login
-                </button>
 
-                <p className="text-center">
-                    Don't have an account? <Link to="/signup" className="underline text-blue-600 mx-1 font-semibold hover:cursor-pointer">SignUp</Link>
-                </p>
+                <button type="submit" className="py-2 font-semibold px-6 rounded bg-blue-500 text-white mx-auto block hover:bg-blue-800 transition">
+                    SignUp
+                </button>
 
             </form>
     )

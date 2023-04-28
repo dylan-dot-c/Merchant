@@ -2,10 +2,45 @@ import React from 'react'
 import card from '../assets/icons/card.svg'
 import deck from '../assets/icons/deck.svg'
 import { NavLink, useNavigate } from 'react-router-dom'
+// needed for auth
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import { auth } from "../firebase"
 
 const MenuItems = () => {
 
+  const [authUser, setAuthUser] = useState(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    
+    // event that monitors the auth state with firebase
+    const listen = onAuthStateChanged(auth, (user) => {
+      if(user) {
+        setAuthUser(user)
+      }else {
+        setAuthUser(null)
+      }
+    })
+
+    return ()=> {
+      listen()
+    }
+
+  }, [])
+
+  const userSignOut = () => {
+      // signing out user
+      signOut(auth)
+       .then( () => {
+        alert("Signed Out Succesfully")
+       })
+  }
+
+  const navigateLogin = () => {
+
+    navigate("/login")
+  }
 
   return (
     <div className='lg:px-16  px-6'>
@@ -34,7 +69,12 @@ const MenuItems = () => {
 
         <div className='flex border-2 border-gray-300 px-2 md:px-3 py-1 rounded-md'>
             {/* changed border color was too bright added 1 unit of px*/}
-            <p>Bavin Edwards</p>
+            <p
+              onClick={authUser ? userSignOut : navigateLogin}
+              title = {authUser ? "Sign Out Now": "Sign In"}
+            >
+              {authUser ? `${authUser.email.split('@')[0]}` : "Sign In"}
+            </p>
         </div>
 
     </section>

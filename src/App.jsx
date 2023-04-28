@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage"
 import DeckOfCard from "./pages/DeckOfCard"
 import AllDeck from "./pages/AllDeck"
 import Login from "./pages/Login"
+import SignUp from "././pages/SignUp"
 
 
 
@@ -23,6 +24,7 @@ function App() {
       <Route path="/decks" element={<AllDeck />} />
       <Route path="/deck/details" element={<DeckOfCard />} />                               
       <Route path="/login" element={<Login />} />                               
+      <Route path="/signup" element={<SignUp />} />                               
     </Routes>
     </BrowserRouter>
     </div>
